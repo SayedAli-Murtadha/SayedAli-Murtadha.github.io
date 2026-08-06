@@ -842,16 +842,66 @@
     }
     .footer .foot-name { color: var(--muted); font-weight: 600; }
 
-    /* ---- Cert meta line ---- */
-    .cert-meta {
+    /* ---- In-progress treatment (pill + progress bar) ---- */
+    .cert-inprog {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      align-self: stretch;
+      margin-top: 4px;
+    }
+    .cert-status {
+      align-self: flex-start;
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--muted-2);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
     }
-    .cert-meta svg { width: 14px; height: 14px; color: var(--accent); flex: none; }
+    .cert-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+      animation: pulseDot 2.2s ease-in-out infinite;
+    }
+    .cert-status-meta {
+      text-transform: none;
+      letter-spacing: 0.02em;
+      font-size: 11.5px;
+    }
+    .cert-bar {
+      display: block;
+      width: 100%;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.14);
+      overflow: hidden;
+      position: relative;
+    }
+    .cert-bar-fill {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.55);
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+    .reveal.in .cert-bar-fill {
+      animation: barFill 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+    }
+    @keyframes barFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
     /* ---- Project card affordance ---- */
     .project-card { cursor: pointer; }
@@ -1248,10 +1298,10 @@
                 </div>
                 <h4>University of Bahrain</h4>
                 <p>Bachelor of Engineering — Electrical &amp; Electronics Engineering</p>
-                <span class="cert-meta">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                  2020 – Present (In Progress)
-                </span>
+                <div class="cert-inprog">
+                  <span class="cert-status cert-status-meta">2020 – Present (In Progress)</span>
+                  <span class="cert-bar"><span class="cert-bar-fill" style="width:72%"></span></span>
+                </div>
               </div>
 
               <div class="cert-card featured" aria-label="General Assembly — Data Science Bootcamp (In Progress)">
@@ -1260,7 +1310,10 @@
                 </div>
                 <h4>General Assembly — Data Science Bootcamp</h4>
                 <p>Intensive, project-driven training in machine learning, statistics, and data storytelling.</p>
-                <span class="cert-status">In Progress</span>
+                <div class="cert-inprog">
+                  <span class="cert-status">In Progress</span>
+                  <span class="cert-bar"><span class="cert-bar-fill" style="width:60%"></span></span>
+                </div>
               </div>
 
               <div class="cert-card placeholder">
@@ -1521,6 +1574,40 @@
             { label: 'Full Report (PDF)', ext: 'PDF', path: 'projects/eeng447/4-Quadrant-VFD-Hoist-Drive.pdf' },
             { label: 'Presentation Deck (PPTX)', ext: 'PPTX', path: 'projects/eeng447/4-Quadrant-VFD-Hoist-Drive.pptx' },
             { label: 'Simulink Model (SLX)', ext: 'SLX', path: 'projects/eeng447/EENG447.slx' }
+          ]
+        },
+        {
+          id: 'iir-fir-digital-filters',
+          index: '05',
+          title: 'IIR & FIR Digital Filters for Audio Restoration',
+          tagline: 'Digital signal processing term project restoring heavily corrupted audio with purpose-built filters in MATLAB.',
+          desc: 'Digital signal processing term project restoring heavily corrupted audio signals with purpose-built IIR and FIR digital filters in MATLAB. From a manually derived 2nd-order notch filter eliminating a 5.5 kHz jamming tone, to automated cascaded notch filtering and Butterworth bandpass restoration of historical analog recordings — performance quantified with MSE and SNR.',
+          overview: 'EENG 479 term project: design, apply, and evaluate FIR and IIR digital filters for noise removal on jammed audio. Performance is assessed quantitatively using Mean Squared Error and Signal-to-Noise Ratio (dB), and qualitatively through perceptual audio evaluation.',
+          approach: [
+            'Part A — Simple unjamming: FFT analysis revealed a single 5512.5 Hz jamming spike; a 2nd-order IIR notch filter (poles at radius r = 0.95) and a 61-tap Hamming-windowed FIR bandstop were derived mathematically from first principles',
+            'Part B — Intermediate unjamming: an automated MATLAB pipeline cascades seven iirnotch filters, using findpeaks with a tuned threshold to isolate only the true 7 harmonic jamming spikes without touching voice frequencies',
+            'Part C — Complex unjamming: spectrogram analysis exposed broadband noise bursts up to 15.5 kHz; 6th-order IIR Butterworth and 80th-order FIR lowpass filters (fc = 4 kHz) restored intelligibility',
+            'Parts D & E — Practical enhancement: a 4th-order Butterworth bandpass (80 Hz – 4000 Hz) removed tape hiss and low-end rumble from historical analog recordings with no clean reference',
+            'Zero-phase filtering (filtfilt) applied throughout, mitigating IIR phase distortion'
+          ],
+          results: [
+            'Part A: SNR improved from −24.73 dB to −9.75 dB (IIR) / −9.70 dB (FIR), MSE from 0.751 to 0.024',
+            'Part B: −24.67 dB → −8.89 dB via a cascaded 14th-order notch system',
+            'Part C: −7.41 dB → −6.82 dB — modest SNR gain but a massive qualitative improvement, demonstrating SNR\'s limits for broadband noise',
+            'Hands-on demonstration of the IIR vs FIR tradeoff: low-order efficiency vs linear phase, reconciled with filtfilt'
+          ],
+          tags: ['MATLAB', 'DSP', 'IIR', 'FIR', 'Signal Processing', 'FFT Analysis'],
+          files: [
+            { label: 'Report (PDF)', ext: 'PDF', path: 'projects/dsp/Digital-Signal-Processing-Project.pdf' },
+            { label: 'Presentation (PPTX)', ext: 'PPTX', path: 'projects/dsp/IIR-FIR-Digital-Filters-Presentation.pptx' },
+            { label: 'MATLAB Code — Part A', ext: 'MAT', path: 'projects/dsp/matlab-part-A.txt' },
+            { label: 'MATLAB Code — Part B', ext: 'MAT', path: 'projects/dsp/matlab-part-B.txt' },
+            { label: 'MATLAB Code — Part C', ext: 'MAT', path: 'projects/dsp/matlab-part-C.txt' },
+            { label: 'MATLAB Code — Part D', ext: 'MAT', path: 'projects/dsp/matlab-part-D.txt' },
+            { label: 'Audio — Clean Reference', ext: 'WAV', path: 'projects/dsp/Clean_SIG.wav' },
+            { label: 'Audio — Jammed Input', ext: 'WAV', path: 'projects/dsp/Jammed_SIG1.wav' },
+            { label: 'Audio — FIR Filtered', ext: 'WAV', path: 'projects/dsp/Part1-Filtered-FIR.wav' },
+            { label: 'Audio — IIR Filtered', ext: 'WAV', path: 'projects/dsp/Part1-Filtered-IIR.wav' }
           ]
         }
       ];

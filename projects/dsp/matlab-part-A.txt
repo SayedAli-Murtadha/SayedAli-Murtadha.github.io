@@ -1,0 +1,81 @@
+% ==========================================
+% EENG 479: Term Project - Part A
+% Simple Unjamming using Manual IIR and FIR
+% ==========================================
+
+% 1. Initialization and Setup
+Fs = 44100;
+f0 = 5512.5; 
+w0 = 2*pi*(f0/Fs); % Equals exactly pi/4
+
+% Load the signals
+[clean, Fs] = audioread('Clean_SIG.wav');[jammed1, Fs] = audioread('Jammed_SIG1.wav');
+
+% Ensure exact same length for metric calculation
+L = min(length(clean), length(jammed1));
+clean = clean(1:L);
+jammed1 = jammed1(1:L);
+
+% ==========================================
+% 2. IIR Notch Filter Design (Manual Pole-Zero)
+% ==========================================
+r = 0.95; % Pole radius
+% Numerator (zeros) and Denominator (poles)
+b_iir =[1, -2*cos(w0), 1];
+a_iir =[1, -2*r*cos(w0), r^2];
+
+% Normalize gain at DC (w=0, z=1)
+G = sum(a_iir) / sum(b_iir);
+b_iir = b_iir * G;
+
+% ==========================================
+% 3. FIR Bandstop Filter Design (Manual Windowing)
+% ==========================================
+N_fir = 60; % Filter order (length 61)
+n = -N_fir/2 : N_fir/2;
+
+% Ideal impulse response for bandstop (wc1 = 0.2*pi, wc2 = 0.3*pi)
+h_ideal = - (sin(0.3*pi*n) - sin(0.2*pi*n)) ./ (pi * n);
+h_ideal(n==0) = 1 - (0.3 - 0.2); % Fix division by zero at n=0
+
+% Apply Hamming Window
+w = 0.54 + 0.46*cos(2*pi*n/N_fir);
+h_fir = h_ideal .* w;
+
+% ==========================================
+% 4. Apply Filters (Using Zero-Phase Filtering)
+% ==========================================
+% Using filtfilt removes phase delay, crucial for accurate MSE/SNR comparison
+y_iir = filtfilt(b_iir, a_iir, jammed1);
+y_fir = filtfilt(h_fir, 1,     jammed1);
+
+% ==========================================
+% 5. Quantitative Metrics (MSE & SNR)
+% ==========================================
+% Calculate Mean Squared Error (Lower is better)
+mse_jammed = mean((clean - jammed1).^2);
+mse_iir = mean((clean - y_iir).^2);
+mse_fir = mean((clean - y_fir).^2);
+
+% Calculate Signal-to-Noise Ratio in dB (Higher is better)
+snr_jammed = 10*log10(sum(clean.^2) / sum((clean - jammed1).^2));
+snr_iir = 10*log10(sum(clean.^2) / sum((clean - y_iir).^2));
+snr_fir = 10*log10(sum(clean.^2) / sum((clean - y_fir).^2));
+
+% Display Results in Command Window
+fprintf('--- Initial Corrupted State ---\n');
+fprintf('MSE: %g | SNR: %.2f dB\n\n', mse_jammed, snr_jammed);
+
+fprintf('--- After IIR Filter ---\n');
+fprintf('MSE: %g | SNR: %.2f dB\n\n', mse_iir, snr_iir);
+
+fprintf('--- After FIR Filter ---\n');
+fprintf('MSE: %g | SNR: %.2f dB\n\n', mse_fir, snr_fir);
+
+% ==========================================
+% 6. Qualitative Assessment (Listen to the results)
+% ==========================================
+disp('Playing Clean Signal...'); sound(clean, Fs); pause(5);
+disp('Playing Jammed Signal...'); sound(jammed1, Fs); pause(5);
+disp('Playing IIR Filtered Signal...'); sound(y_iir, Fs); pause(5);
+disp('Playing FIR Filtered Signal...'); sound(y_fir, Fs);

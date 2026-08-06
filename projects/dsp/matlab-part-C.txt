@@ -1,0 +1,50 @@
+% ==========================================
+% EENG 479: Term Project - Part C
+% Complex Unjamming (Lowpass Filter)
+% ==========================================
+% 1. Initialization
+[clean, Fs] = audioread('Clean_SIG.wav');
+[jammed3, Fs] = audioread('Jammed_SIG3.wav');
+L = min(length(clean), length(jammed3));
+clean = clean(1:L);
+jammed3 = jammed3(1:L);
+% duration for playback (seconds)
+dur = L / Fs;
+% 2. Define the Lowpass Cutoff Frequency
+fc = 4000; % Cutoff frequency at 4000 Hz to save the voice
+Wn = fc / (Fs/2); % Normalized frequency (1.0 = Nyquist)
+% ==========================================
+% 3. IIR Lowpass Filter (Butterworth)
+% ==========================================
+% Design a 6th-order Butterworth Lowpass Filter
+[b_iir_lp, a_iir_lp] = butter(6, Wn, 'low');
+% Apply the filter (zero-phase)
+y_iir_lp = filtfilt(b_iir_lp, a_iir_lp, jammed3);
+% ==========================================
+% 4. FIR Lowpass Filter (Window Method)
+% ==========================================
+% Design an 80th-order FIR Lowpass Filter using Hamming window
+b_fir_lp = fir1(80, Wn, 'low');
+% Apply the filter (zero-phase)
+y_fir_lp = filtfilt(b_fir_lp, 1, jammed3);
+% ==========================================
+% 5. Quantitative Metrics
+% ==========================================
+mse_jammed3 = mean((clean - jammed3).^2);
+mse_iir_lp = mean((clean - y_iir_lp).^2);
+mse_fir_lp = mean((clean - y_fir_lp).^2);
+snr_jammed3 = 10log10(sum(clean.^2) / sum((clean - jammed3).^2));
+snr_iir_lp   = 10log10(sum(clean.^2) / sum((clean - y_iir_lp).^2));
+snr_fir_lp   = 10*log10(sum(clean.^2) / sum((clean - y_fir_lp).^2));
+fprintf('\n--- Initial Corrupted State (Jammed 3) ---\n');
+fprintf('MSE: %g | SNR: %.2f dB\n', mse_jammed3, snr_jammed3);
+fprintf('\n--- After IIR Lowpass Filter ---\n');
+fprintf('MSE: %g | SNR: %.2f dB\n', mse_iir_lp, snr_iir_lp);
+fprintf('\n--- After FIR Lowpass Filter ---\n');
+fprintf('MSE: %g | SNR: %.2f dB\n\n', mse_fir_lp, snr_fir_lp);
+% ==========================================
+% 6. Qualitative Assessment
+% ==========================================
+disp('Playing Jammed Signal 3...'); sound(jammed3, Fs); pause(dur + 0.2);
+disp('Playing IIR Lowpass Output...'); sound(y_iir_lp, Fs); pause(dur + 0.2);
+disp('Playing FIR Lowpass Output...'); sound(y_fir_lp, Fs);

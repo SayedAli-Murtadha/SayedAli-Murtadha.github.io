@@ -1,0 +1,57 @@
+% ==========================================
+% EENG 479: Term Project - Part D-E
+% Practical Signal Enhancement 1 (SIG4)
+% ==========================================
+% 1. Initialization
+filename = 'SIG4.wav';
+[sig4, Fs] = audioread(filename);
+% Convert to mono if stereo
+if size(sig4,2) > 1
+sig4 = mean(sig4, 2);
+end
+% 2. Define Bandpass Filter Cutoff Frequencies
+f_low = 80;    % Cut off sub-bass rumble below 80 Hz
+f_high = 4000; % Cut off tape hiss above 4000 Hz
+Wn = [f_low, f_high] / (Fs/2); % Normalize for Nyquist
+% Validate normalized frequencies
+if any(Wn <= 0) || any(Wn >= 1) || Wn(1) >= Wn(2)
+error('Invalid cutoff frequencies. Ensure 0 < f_low < f_high < Fs/2.');
+end
+% ==========================================
+% 3. IIR Bandpass Filter (Butterworth)
+% ==========================================
+% Design a 4th-order Butterworth bandpass filter
+[b_bp, a_bp] = butter(4, Wn, 'bandpass');
+% Apply the filter zero-phase
+sig4_clean = filtfilt(b_bp, a_bp, sig4);
+% ==========================================
+% 4. Qualitative Assessment
+% ==========================================
+dur = length(sig4) / Fs;
+disp('Playing RAW SIG4 (Notice the heavy "ssss" tape hiss)...');
+soundsc(sig4, Fs); % soundsc auto-scales to avoid clipping
+pause(dur + 0.5);
+disp('Playing ENHANCED SIG4 (Warm and Clean)...');
+soundsc(sig4_clean, Fs);
+% Part E: Apply same filter to SIG5
+[ sig5, Fs5 ] = audioread('SIG5.wav');
+
+% Convert to mono if stereo
+if size(sig5,2) > 1
+    sig5 = mean(sig5, 2);
+end
+
+% If SIG5 sample rate differs from SIG4's Fs, resample to Fs
+if exist('Fs','var') && Fs5 ~= Fs
+    warning('SIG5 sample rate (%d Hz) differs from SIG4 sample rate (%d Hz). Resampling SIG5 to match Fs.', Fs5, Fs);
+    sig5 = resample(sig5, Fs, Fs5);
+    Fs5 = Fs;
+end
+
+% Apply the previously designed bandpass IIR filter
+sig5_clean = filtfilt(b_bp, a_bp, sig5);
+
+% Optionally play the cleaned SIG5
+disp('Playing ENHANCED SIG5 ...');
+soundsc(sig5_clean, Fs5);
+

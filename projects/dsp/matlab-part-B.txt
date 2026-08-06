@@ -1,0 +1,67 @@
+% ==========================================
+% EENG 479: Term Project - Part B
+% Intermediate Unjamming using Canned Functions
+% ==========================================
+
+% 1. Setup and Initialization
+[clean, Fs] = audioread('Clean_SIG.wav');[jammed2, Fs] = audioread('Jammed_SIG2.wav');
+
+L = min(length(clean), length(jammed2));
+clean = clean(1:L);
+jammed2 = jammed2(1:L);
+
+% 2. Automatically Detect the Jamming Frequencies
+% Perform FFT on the signal
+Y = fft(jammed2);
+P1 = abs(Y(1:floor(L/2)+1)); % Take only positive frequencies
+f_axis = (0:length(P1)-1) * Fs / L;
+
+% Find any spikes with a magnitude > 5000 (The clean signal max is ~600)
+% MinPeakDistance prevents detecting the same spike twice
+[pks, locs] = findpeaks(P1, 'MinPeakHeight', 5000, 'MinPeakDistance', 100);
+jamming_freqs = f_axis(locs);
+
+fprintf('--- Detected %d Jamming Frequencies (Hz) ---\n', length(jamming_freqs));
+disp(jamming_freqs');
+
+% ==========================================
+% 3. Apply Cascaded Canned Filters
+% ==========================================
+y_filtered = jammed2; % Start with the corrupted signal
+
+for k = 1:length(jamming_freqs)
+    f0 = jamming_freqs(k);
+    
+    % Normalize frequency (1.0 equals Nyquist Fs/2)
+    w0 = f0 / (Fs/2); 
+    
+    % Quality Factor (Q) determines notch width. Q=35 is a standard narrow notch.
+    bw = w0 / 35; 
+    
+    % CANNED FUNCTION: iirnotch
+    [b, a] = iirnotch(w0, bw); 
+    
+    % Apply the filter zero-phase
+    y_filtered = filtfilt(b, a, y_filtered);
+end
+
+% ==========================================
+% 4. Quantitative Metrics (MSE & SNR)
+% ==========================================
+mse_jammed2 = mean((clean - jammed2).^2);
+mse_filtered = mean((clean - y_filtered).^2);
+
+snr_jammed2 = 10*log10(sum(clean.^2) / sum((clean - jammed2).^2));
+snr_filtered = 10*log10(sum(clean.^2) / sum((clean - y_filtered).^2));
+
+fprintf('\n--- Initial Corrupted State (Jammed 2) ---\n');
+fprintf('MSE: %g | SNR: %.2f dB\n', mse_jammed2, snr_jammed2);
+
+fprintf('\n--- After Canned Cascade IIR Filters ---\n');
+fprintf('MSE: %g | SNR: %.2f dB\n\n', mse_filtered, snr_filtered);
+
+% ==========================================
+% 5. Qualitative Assessment (Listen to the results)
+% ==========================================
+disp('Playing Jammed Signal 2...'); sound(jammed2, Fs); pause(5);
+disp('Playing Filtered Output...'); sound(y_filtered, Fs);
