@@ -842,6 +842,228 @@
     }
     .footer .foot-name { color: var(--muted); font-weight: 600; }
 
+    /* ---- Cert meta line ---- */
+    .cert-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted-2);
+    }
+    .cert-meta svg { width: 14px; height: 14px; color: var(--accent); flex: none; }
+
+    /* ---- Project card affordance ---- */
+    .project-card { cursor: pointer; }
+    .project-card:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    .project-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .project-open {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .project-open svg { width: 15px; height: 15px; transition: transform 0.25s ease; }
+    .project-card:hover .project-open svg { transform: translateX(5px); }
+    .project-open .open-hint { color: var(--muted-2); font-weight: 600; transition: color 0.25s ease; }
+    .project-card:hover .project-open .open-hint { color: var(--muted); }
+
+    /* ---- Project detail overlay ---- */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+    }
+    .overlay.open {
+      visibility: visible;
+      opacity: 1;
+      transition-delay: 0s;
+    }
+    .overlay-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(4, 8, 16, 0.8);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+    }
+    .overlay-panel {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: min(880px, 100%);
+      max-height: min(88vh, 860px);
+      border-radius: 22px;
+      background:
+        radial-gradient(120% 90% at 100% 0%, rgba(56, 189, 248, 0.09), transparent 55%),
+        radial-gradient(100% 80% at 0% 100%, rgba(167, 139, 250, 0.08), transparent 55%),
+        linear-gradient(180deg, #0e1626 0%, #0a101f 100%);
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 50px 140px -30px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(56, 189, 248, 0.06);
+      overflow: hidden;
+      transform: translateY(32px) scale(0.965);
+      opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+    }
+    .overlay.open .overlay-panel { transform: translateY(0) scale(1); opacity: 1; }
+    .overlay-content {
+      overflow-y: auto;
+      padding: clamp(30px, 4vw, 52px) clamp(26px, 4vw, 52px);
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+    }
+    .overlay-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 3;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: rgba(148, 163, 184, 0.08);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+    }
+    .overlay-close:hover {
+      color: var(--text);
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.14);
+      transform: rotate(90deg);
+    }
+    .overlay-close svg { width: 18px; height: 18px; }
+    .overlay-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* ---- Detail view content ---- */
+    .detail-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+      padding-right: 56px;
+    }
+    .detail-title {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      padding-right: 56px;
+    }
+    .detail-tagline {
+      margin-top: 12px;
+      font-size: 15.5px;
+      color: var(--muted);
+    }
+    .detail-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .detail-tags span {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #b7c4da;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.08);
+      border: 1px solid var(--border);
+    }
+    .detail-section { margin-top: 30px; }
+    .detail-section h4 {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .detail-section h4::before {
+      content: "";
+      width: 22px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.6;
+    }
+    .detail-overview { margin-top: 12px; font-size: 15.5px; color: #c6d0e0; }
+    .detail-section ul { display: grid; gap: 11px; margin-top: 14px; }
+    .detail-section li {
+      position: relative;
+      padding-left: 24px;
+      font-size: 14.5px;
+      color: #c6d0e0;
+    }
+    .detail-section li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+    }
+    .detail-section.approach li::before { background: var(--accent-2); box-shadow: 0 0 8px rgba(167, 139, 250, 0.6); }
+    .detail-section.key li::before { background: var(--accent-3); box-shadow: 0 0 8px rgba(52, 211, 153, 0.6); }
+
+    .detail-files {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .file-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--text);
+      font-size: 13.5px;
+      font-weight: 700;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .file-btn svg { width: 17px; height: 17px; color: var(--accent); flex: none; }
+    .file-btn:hover {
+      background: rgba(56, 189, 248, 0.16);
+      border-color: rgba(56, 189, 248, 0.55);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px -16px rgba(56, 189, 248, 0.5);
+    }
+    .file-btn small { display: block; font-size: 11px; font-weight: 600; color: var(--muted-2); margin-top: 1px; }
+
+    body.overlay-open,
+    html.overlay-open { overflow: hidden; }
+
     /* ---- Reveal on scroll ---- */
     .reveal {
       opacity: 0;
@@ -912,6 +1134,7 @@
         transition-duration: 0.001s !important;
       }
       .reveal, .hero-anim { opacity: 1; transform: none; }
+      .overlay, .overlay-panel { transition: none !important; }
     }
   </style>
 </head>
@@ -1019,6 +1242,18 @@
             <h3>Badges &amp; Certifications</h3>
             <div class="cert-grid">
               <!-- CERTIFICATIONS: replace the placeholder cards with your certifications -->
+              <div class="cert-card featured" aria-label="University of Bahrain — Bachelor of Engineering — Electrical &amp; Electronics Engineering (2020 – Present, In Progress)">
+                <div class="cert-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/><path d="M22 10v6"/></svg>
+                </div>
+                <h4>University of Bahrain</h4>
+                <p>Bachelor of Engineering — Electrical &amp; Electronics Engineering</p>
+                <span class="cert-meta">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                  2020 – Present (In Progress)
+                </span>
+              </div>
+
               <div class="cert-card featured" aria-label="General Assembly — Data Science Bootcamp (In Progress)">
                 <div class="cert-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
@@ -1026,14 +1261,6 @@
                 <h4>General Assembly — Data Science Bootcamp</h4>
                 <p>Intensive, project-driven training in machine learning, statistics, and data storytelling.</p>
                 <span class="cert-status">In Progress</span>
-              </div>
-
-              <div class="cert-card placeholder">
-                <div class="cert-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                </div>
-                <h4>Certification — Add Details</h4>
-                <p>Drop your certification title, issuer, and date here.</p>
               </div>
 
               <div class="cert-card placeholder">
@@ -1129,40 +1356,7 @@
           <p class="section-sub">Machine learning, data pipelines, and analytics built to solve real problems.</p>
         </div>
 
-        <div class="projects-grid">
-          <article class="project-card reveal">
-            <span class="project-index">01</span>
-            <h3>Bahrain Rental Price Prediction</h3>
-            <p class="project-desc">
-              Machine learning regression project predicting monthly rental prices in Bahrain using a Random Forest pipeline with ~56 engineered features. Combines target encoding with 5-fold stratified cross-validation and a custom 'MedianForest' ensemble tuned to minimize mean absolute error, producing a competition-ready submission.
-            </p>
-            <div class="project-tags">
-              <span>Python</span><span>pandas</span><span>NumPy</span><span>scikit-learn</span><span>Jupyter</span>
-            </div>
-          </article>
-
-          <article class="project-card reveal">
-            <span class="project-index">02</span>
-            <h3>Weather Track</h3>
-            <p class="project-desc">
-              An interactive weather observation tracker built with Streamlit. Users log local observations, store records persistently, and analyze weather patterns over time. Code is structured with clean separation between logic and utilities for easy maintenance and extension.
-            </p>
-            <div class="project-tags">
-              <span>Python</span><span>Streamlit</span><span>pandas</span>
-            </div>
-          </article>
-
-          <article class="project-card reveal">
-            <span class="project-index">03</span>
-            <h3>Wind Turbine Efficiency Analysis</h3>
-            <p class="project-desc">
-              Exploratory data analysis for a renewable-energy private equity firm, identifying which U.S. wind-farm structural and geographic traits drive energy efficiency. Merges the US Wind Turbine Database with EIA-923 generation data, engineers capacity factors, and surfaces acquisition opportunities — including a non-technical stakeholder deck.
-            </p>
-            <div class="project-tags">
-              <span>Python</span><span>pandas</span><span>NumPy</span><span>matplotlib</span><span>seaborn</span>
-            </div>
-          </article>
-        </div>
+        <div class="projects-grid" id="projectsGrid"><!-- cards rendered by JS from the projects array --></div>
       </div>
     </section>
 
@@ -1213,6 +1407,17 @@
     </section>
   </main>
 
+  <!-- ================= PROJECT DETAIL OVERLAY ================= -->
+  <div class="overlay" id="projectOverlay" role="dialog" aria-modal="true">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" id="overlayClose" aria-label="Close project details">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+      <div class="overlay-content" id="overlayContent"></div>
+    </div>
+  </div>
+
   <!-- ================= FOOTER ================= -->
   <footer class="footer">
     <div class="container">
@@ -1224,6 +1429,218 @@
     (function () {
       'use strict';
 
+      /* ============================================================
+         PROJECTS DATA
+         Add a new project by appending one object to this array.
+         Fields: id (unique), index, title, tagline, desc (card text),
+         overview, approach[], results[], tags[], and optionally files[]
+         for download links in the detail view. The grid cards AND the
+         detail overlays are both rendered from this single source.
+         ============================================================ */
+      var projects = [
+        {
+          id: 'rental-price-prediction',
+          index: '01',
+          title: 'Bahrain Rental Price Prediction',
+          tagline: 'Predicting monthly rental prices in Bahrain with a competition-ready Random Forest pipeline.',
+          desc: 'Machine learning regression project predicting monthly rental prices in Bahrain using a Random Forest pipeline with ~56 engineered features. Combines target encoding with 5-fold stratified cross-validation and a custom \'MedianForest\' ensemble tuned to minimize mean absolute error, producing a competition-ready submission.',
+          overview: 'Machine learning regression pipeline predicting monthly rental prices in Bahrain (BHD) from property features, built for a General Assembly data science competition with ~10,500 training rows and a ~3,500-row test set.',
+          approach: [
+            'Engineered ~56 numeric features from the raw property dataset',
+            'Applied target encoding for high-cardinality categoricals',
+            'Used 5-fold stratified cross-validation for reliable evaluation',
+            'Built a custom \'MedianForest\' ensemble that predicts the median of Random Forest tree outputs, tuned specifically to minimize mean absolute error',
+            'Capped targets at 1850 BHD to keep predictions within realistic bounds'
+          ],
+          results: [
+            'Stable, competition-ready cross-validated MAE',
+            'Generated a clean submission CSV with predicted monthly rents'
+          ],
+          tags: ['Python', 'pandas', 'NumPy', 'scikit-learn', 'Jupyter']
+        },
+        {
+          id: 'weather-track',
+          index: '02',
+          title: 'Weather Track',
+          tagline: 'An interactive weather observation tracker built with Streamlit.',
+          desc: 'An interactive weather observation tracker built with Streamlit. Users log local observations, store records persistently, and analyze weather patterns over time. Code is structured with clean separation between logic and utilities for easy maintenance and extension.',
+          overview: 'An interactive weather observation tracker built with Streamlit, letting users log local weather observations, store them persistently, and analyze patterns over time.',
+          approach: [
+            'Dashboard-style input and analysis interface in Streamlit',
+            'Persistent local storage layer with UUID-keyed records',
+            'Clean separation of concerns between the weather_logic and weather_utils modules for easy maintenance and extension'
+          ],
+          results: [
+            'Working end-to-end logging and analysis workflow',
+            'Modular architecture that is easy to extend with new analysis features'
+          ],
+          tags: ['Python', 'Streamlit', 'pandas']
+        },
+        {
+          id: 'wind-turbine-efficiency',
+          index: '03',
+          title: 'Wind Turbine Efficiency Analysis',
+          tagline: 'Renewable-energy acquisition analysis for a private equity firm.',
+          desc: 'Exploratory data analysis for a renewable-energy private equity firm, identifying which U.S. wind-farm structural and geographic traits drive energy efficiency. Merges the US Wind Turbine Database with EIA-923 generation data, engineers capacity factors, and surfaces acquisition opportunities — including a non-technical stakeholder deck.',
+          overview: 'Exploratory data analysis for a renewable-energy private equity firm, identifying which U.S. wind-farm structural and geographic traits drive energy efficiency to guide acquisition strategy.',
+          approach: [
+            'Merged the US Wind Turbine Database with EIA-923 actual net generation data (full year 2025)',
+            'Engineered capacity factors to normalize output across turbine sizes',
+            'Segmented by region, vintage, and turbine characteristics',
+            'Developed a non-technical stakeholder deck alongside the analysis'
+          ],
+          results: [
+            'Midwest and Texas hold ~55% of U.S. turbines',
+            'Post-2015 turbines produce roughly 5x more power than older units',
+            'Identified underbuilt high-wind states (SD, MT, WY) as greenfield acquisition opportunities'
+          ],
+          tags: ['Python', 'pandas', 'NumPy', 'matplotlib', 'seaborn']
+        },
+        {
+          id: 'vfd-hoist-drive',
+          index: '04',
+          title: '4-Quadrant VFD Hoist Drive',
+          tagline: 'A 4-quadrant VFD controlling a 4 kW induction motor under a gravitational hoist load.',
+          desc: 'Simulation and analysis of a 4-quadrant variable frequency drive (VFD) controlling a 4 kW induction motor under a gravitational hoist load. Built in MATLAB/Simulink with scalar Volts-per-Hertz control and SPWM modulation, the system manages bidirectional power flow — motoring while hoisting and regeneration while lowering — with a dynamic braking chopper protecting the DC link from regenerative voltage swells.',
+          overview: 'Simulation and analysis of a 4-quadrant variable frequency drive (VFD) controlling a 4 kW induction motor under a gravitational hoist load. Built in MATLAB/Simulink with scalar Volts-per-Hertz control and SPWM modulation, the system manages bidirectional power flow — motoring while hoisting and regeneration while lowering — with a dynamic braking chopper protecting the DC link from regenerative voltage swells.',
+          approach: [
+            'AC-DC-AC power chain: 500 V / 50 Hz grid into an uncontrolled diode bridge rectifier',
+            'DC link with 2200 µF capacitor feeding a 2-level IGBT inverter',
+            'Scalar V/f control keeping the voltage-to-frequency ratio constant, modulated via Sinusoidal PWM with a 1 kHz triangular carrier',
+            'Hysteresis-controlled dynamic braking chopper (IGBT + 60 Ω resistor bank) that switches ON above 700 V and OFF below 650 V to dissipate regenerative energy',
+            'Full Simulink model with time-domain and torque-speed (XY) analysis'
+          ],
+          results: [
+            'Verified torque stability against gravity in both hoisting and lowering',
+            'Speed profile driven through +10 → 0 → −10 rad/s (motoring and regeneration)',
+            'DC bus voltage actively clamped within the 650–700 V window during overhauling',
+            'Torque-speed XY plot confirms operation across all four quadrants'
+          ],
+          tags: ['MATLAB', 'Simulink', 'Power Electronics', 'VFD', 'SPWM', 'Electrical Machines'],
+          files: [
+            { label: 'Full Report (PDF)', ext: 'PDF', path: 'projects/eeng447/4-Quadrant-VFD-Hoist-Drive.pdf' },
+            { label: 'Presentation Deck (PPTX)', ext: 'PPTX', path: 'projects/eeng447/4-Quadrant-VFD-Hoist-Drive.pptx' },
+            { label: 'Simulink Model (SLX)', ext: 'SLX', path: 'projects/eeng447/EENG447.slx' }
+          ]
+        }
+      ];
+
+      /* --- helpers --- */
+      function esc(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+      function arrowSvg() {
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+      }
+
+      /* --- render project cards from the array --- */
+      var grid = document.getElementById('projectsGrid');
+      grid.innerHTML = projects.map(function (p) {
+        var tags = p.tags.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('');
+        return '' +
+          '<article class="project-card reveal" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Open ' + esc(p.title) + ' details" data-project="' + esc(p.id) + '">' +
+            '<span class="project-index">' + esc(p.index) + '</span>' +
+            '<h3>' + esc(p.title) + '</h3>' +
+            '<p class="project-desc">' + esc(p.desc) + '</p>' +
+            '<div class="project-tags">' + tags + '</div>' +
+            '<div class="project-foot">' +
+              '<span class="project-open"><span class="open-hint">View details</span> ' + arrowSvg() + '</span>' +
+            '</div>' +
+          '</article>';
+      }).join('');
+
+      /* ============================================================
+         PROJECT DETAIL OVERLAY
+         ============================================================ */
+      var overlay = document.getElementById('projectOverlay');
+      var overlayContent = document.getElementById('overlayContent');
+      var overlayClose = document.getElementById('overlayClose');
+      var lastFocused = null;
+
+      function renderDetail(p) {
+        var h = '';
+        h += '<p class="detail-eyebrow">Project ' + esc(p.index) + ' · Case Study</p>';
+        h += '<h3 class="detail-title">' + esc(p.title) + '</h3>';
+        h += '<p class="detail-tagline">' + esc(p.tagline) + '</p>';
+        h += '<div class="detail-tags">' + p.tags.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>';
+        h += '<div class="detail-section"><h4>Overview</h4><p class="detail-overview">' + esc(p.overview) + '</p></div>';
+        h += '<div class="detail-section approach"><h4>Approach</h4><ul>' + p.approach.map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul></div>';
+        h += '<div class="detail-section key"><h4>Key Results</h4><ul>' + p.results.map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul></div>';
+        if (p.files && p.files.length) {
+          h += '<div class="detail-section"><h4>Project Files</h4><div class="detail-files">';
+          h += p.files.map(function (f) {
+            return '<a class="file-btn" href="' + esc(f.path) + '" download>' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>' +
+              '<span>' + esc(f.label) + '<small>' + esc(f.ext) + ' · ' + esc(f.path) + '</small></span>' +
+            '</a>';
+          }).join('');
+          h += '</div></div>';
+        }
+        overlayContent.innerHTML = h;
+        overlayContent.scrollTop = 0;
+        overlay.setAttribute('aria-label', p.title);
+      }
+
+      function openProject(id) {
+        var p = null;
+        for (var i = 0; i < projects.length; i++) {
+          if (projects[i].id === id) { p = projects[i]; break; }
+        }
+        if (!p) return;
+        lastFocused = document.activeElement;
+        renderDetail(p);
+        overlay.classList.add('open');
+        document.body.classList.add('overlay-open');
+        overlayClose.focus();
+      }
+
+      function closeProject() {
+        if (!overlay.classList.contains('open')) return;
+        overlay.classList.remove('open');
+        document.body.classList.remove('overlay-open');
+        if (lastFocused && lastFocused.focus) lastFocused.focus();
+      }
+
+      /* open on card click / Enter / Space */
+      grid.addEventListener('click', function (e) {
+        var card = e.target.closest('.project-card');
+        if (card) openProject(card.getAttribute('data-project'));
+      });
+      grid.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        var card = e.target.closest('.project-card');
+        if (card) { e.preventDefault(); openProject(card.getAttribute('data-project')); }
+      });
+
+      /* close via X button, backdrop click, or Escape */
+      overlayClose.addEventListener('click', closeProject);
+      overlay.querySelector('.overlay-backdrop').addEventListener('click', closeProject);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeProject();
+      });
+
+      /* basic focus trap while the overlay is open */
+      overlay.addEventListener('keydown', function (e) {
+        if (e.key !== 'Tab') return;
+        var focusables = overlay.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+        if (!focusables.length) return;
+        var first = focusables[0];
+        var last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault(); last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault(); first.focus();
+        }
+      });
+
+      /* ============================================================
+         SITE SHELL
+         ============================================================ */
       /* --- Dynamic footer year --- */
       document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -1236,19 +1653,12 @@
         links.classList.remove('open');
         toggle.setAttribute('aria-expanded', 'false');
       }
-
       toggle.addEventListener('click', function () {
         var isOpen = links.classList.toggle('open');
         toggle.classList.toggle('open', isOpen);
         toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       });
-
-      /* close the menu when a link is chosen */
-      links.querySelectorAll('a').forEach(function (a) {
-        a.addEventListener('click', closeMenu);
-      });
-
-      /* close on outside click or Escape */
+      links.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeMenu); });
       document.addEventListener('click', function (e) {
         if (links.classList.contains('open') && !links.contains(e.target) && !toggle.contains(e.target)) closeMenu();
       });
@@ -1258,13 +1668,11 @@
 
       /* --- Nav elevation on scroll --- */
       var nav = document.getElementById('nav');
-      function onScroll() {
-        nav.classList.toggle('scrolled', window.scrollY > 12);
-      }
+      function onScroll() { nav.classList.toggle('scrolled', window.scrollY > 12); }
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
 
-      /* --- Reveal on scroll (with per-element stagger) --- */
+      /* --- Reveal on scroll (runs AFTER cards render so they animate in too) --- */
       var reveals = document.querySelectorAll('.reveal');
       if ('IntersectionObserver' in window) {
         var io = new IntersectionObserver(function (entries) {
@@ -1294,7 +1702,6 @@
           a.classList.toggle('active', a.getAttribute('href') === '#' + id);
         });
       }
-
       if ('IntersectionObserver' in window) {
         var spy = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
