@@ -1291,7 +1291,7 @@
           <div class="cert-section reveal">
             <h3>Badges &amp; Certifications</h3>
             <div class="cert-grid">
-              <!-- CERTIFICATIONS: replace the placeholder cards with your certifications -->
+              <!-- CERTIFICATIONS: placeholder cards have been removed — the section now shows only real credentials. To add a certification later, duplicate one of the cards below and swap in the title, description, and in-progress meta. -->
               <div class="cert-card featured" aria-label="University of Bahrain — Bachelor of Engineering — Electrical &amp; Electronics Engineering (2020 – Present, In Progress)">
                 <div class="cert-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/><path d="M22 10v6"/></svg>
@@ -1314,22 +1314,6 @@
                   <span class="cert-status">In Progress</span>
                   <span class="cert-bar"><span class="cert-bar-fill" style="width:60%"></span></span>
                 </div>
-              </div>
-
-              <div class="cert-card placeholder">
-                <div class="cert-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                </div>
-                <h4>Certification — Add Details</h4>
-                <p>Drop your certification title, issuer, and date here.</p>
-              </div>
-
-              <div class="cert-card placeholder">
-                <div class="cert-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                </div>
-                <h4>Certification — Add Details</h4>
-                <p>Drop your certification title, issuer, and date here.</p>
               </div>
             </div>
           </div>
@@ -1509,7 +1493,10 @@
             'Stable, competition-ready cross-validated MAE',
             'Generated a clean submission CSV with predicted monthly rents'
           ],
-          tags: ['Python', 'pandas', 'NumPy', 'scikit-learn', 'Jupyter']
+          tags: ['Python', 'pandas', 'NumPy', 'scikit-learn', 'Jupyter'],
+          files: [
+            { label: 'Full Report (PDF)', ext: 'PDF', path: 'projects/house-rental/House-Rental-Price-Prediction-Report.pdf' }
+          ]
         },
         {
           id: 'weather-track',
@@ -1527,7 +1514,10 @@
             'Working end-to-end logging and analysis workflow',
             'Modular architecture that is easy to extend with new analysis features'
           ],
-          tags: ['Python', 'Streamlit', 'pandas']
+          tags: ['Python', 'Streamlit', 'pandas'],
+          files: [
+            { label: 'Full Report (PDF)', ext: 'PDF', path: 'projects/weather-track/Weather-Tracker-Report.pdf' }
+          ]
         },
         {
           id: 'wind-turbine-efficiency',
@@ -1547,7 +1537,10 @@
             'Post-2015 turbines produce roughly 5x more power than older units',
             'Identified underbuilt high-wind states (SD, MT, WY) as greenfield acquisition opportunities'
           ],
-          tags: ['Python', 'pandas', 'NumPy', 'matplotlib', 'seaborn']
+          tags: ['Python', 'pandas', 'NumPy', 'matplotlib', 'seaborn'],
+          files: [
+            { label: 'Full Report (PDF)', ext: 'PDF', path: 'projects/wind-turbine/Wind-Turbine-EDA-Report.pdf' }
+          ]
         },
         {
           id: 'vfd-hoist-drive',
@@ -1608,6 +1601,30 @@
             { label: 'Audio — Jammed Input', ext: 'WAV', path: 'projects/dsp/Jammed_SIG1.wav' },
             { label: 'Audio — FIR Filtered', ext: 'WAV', path: 'projects/dsp/Part1-Filtered-FIR.wav' },
             { label: 'Audio — IIR Filtered', ext: 'WAV', path: 'projects/dsp/Part1-Filtered-IIR.wav' }
+          ]
+        },
+        {
+          id: 'eeg-power-spectrum-modeling',
+          index: '06',
+          title: 'EEG Power Spectrum Modeling — Lagrange & Newton Interpolation',
+          tagline: 'Modeling the EEG β-wave power spectrum with Lagrange and Newton interpolation in MATLAB.',
+          desc: 'Course project modeling the EEG β-wave power spectrum for brain-signal de-noising. Extracted 50 data points from a published EEG power spectral density plot using WebPlotDigitizer, then built 5th-order Lagrange and Newton interpolation models in MATLAB across the 13–30 Hz β band — both methods returned identical predictions at a random validation frequency.',
+          overview: 'EENG 205/EENG 207 course project: create a 5th-order model of the EEG power spectral density using Lagrange approximation and Newton\'s divided differences for the β wave band (13–30 Hz) at electrode P11 — laying the foundation for a de-noising approach to brain signals.',
+          approach: [
+            'Data points extracted from a published EEG power spectral density graph (Secco et al., 2021) using WebPlotDigitizer — 50 points covering the β band',
+            '6 evenly spaced data points selected to construct the 5th-order polynomials',
+            'Lagrange interpolation implemented as an original MATLAB algorithm, written from scratch per assignment rules',
+            'Newton interpolation via divided differences built on the same data set',
+            'Verification: a random frequency selected within the β band, with power predicted by both methods'
+          ],
+          results: [
+            'Both the Lagrange and Newton 5th-order models produced identical power predictions at the verification frequency',
+            'Demonstrated that interpolation-based spectral modeling can support EEG de-noising workflows',
+            'Original MATLAB implementation with a full data-extraction pipeline: plot digitization → β-band filtering → polynomial fitting'
+          ],
+          tags: ['MATLAB', 'Numerical Methods', 'Interpolation', 'Signal Processing', 'EEG Analysis'],
+          files: [
+            { label: 'Project Report (PDF)', ext: 'PDF', path: 'projects/eeng205-207/EENG-205-207-Course-Project.pdf' }
           ]
         }
       ];
