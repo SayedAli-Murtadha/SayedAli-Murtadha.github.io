@@ -1436,46 +1436,15 @@
     }
     .rail-line-bed.lit { stroke: rgba(255, 182, 74, 0.45); }
 
-    /* ---- Transmission line: energy stroke (flowing dashes once lit) ---- */
-    .rail-line-energy {
-      fill: none;
-      stroke: var(--rail-live);
-      stroke-width: 2;
-      stroke-linecap: square;
-      stroke-linejoin: miter;
-      vector-effect: non-scaling-stroke;
-      /* asymmetric pattern (12 on, 5 off, 2-on tick, 6 off, period 26)
-         so the flow DIRECTION is readable: long dash → short tick */
-      stroke-dasharray: 12 5 2 6;
-      opacity: 0;
-      filter: drop-shadow(0 0 3px rgba(255, 182, 74, 0.7));
-      transition: opacity 0.7s ease;
-    }
-    .rail-line-energy.lit {
-      opacity: 1;
-      animation: railFlow 2.2s linear infinite;
-      /* base direction: normal (motoring, top → bottom) */
-    }
-    /* Bidirectional power flow: scrolling up = regeneration, so every
-       lit segment's dash flow reverses (bottom → top). Implemented as
-       an animation-name swap (railFlow → railFlowRev) plus a forced
-       restart from JS on every direction flip — Safari ignores live
-       animation-name changes on a running animation unless the element
-       is reflowed. Keyframe offsets span one full pattern period
-       (26px) so a restart lands on the same visual phase. Energize +
-       data-needs gating stay exactly as is. The reduced-motion block
-       below still wins because `animation: none` removes the running
-       animation entirely. */
-    .power-rail.flow-rev .rail-line-energy.lit {
-      animation-name: railFlowRev;
-    }
-    @keyframes railFlow {
-      from { stroke-dashoffset: 0; }
-      to { stroke-dashoffset: -26; }
-    }
-    @keyframes railFlowRev {
-      from { stroke-dashoffset: -26; }
-      to { stroke-dashoffset: 0; }
+    /* ---- Energy flow: marching dots (JS-driven travel along the path) ----
+       The old stroke-dash animation scaled with the stretched viewBox and
+       was visually imperceptible. Current is now shown as small glowing
+       circles that travel along each lit transmission line at a constant
+       screen-pixel speed (see the rail marching-dots JS). Direction is
+       instant — down = motoring, up = regeneration. */
+    .rail-dot {
+      fill: var(--rail-live);
+      filter: drop-shadow(0 0 4px rgba(255, 182, 74, 0.9));
     }
 
     /* ---- Busbar: thick horizontal node line ---- */
@@ -1601,13 +1570,9 @@
       text-transform: uppercase;
     }
 
-    /* reduced motion: freeze the flow, keep the lit state (solid line) */
-    @media (prefers-reduced-motion: reduce) {
-      .rail-line-energy.lit {
-        animation: none;
-        stroke-dasharray: none;
-      }
-    }
+    /* reduced motion: the marching-dot loop is disabled in JS; dots are
+       parked at fixed positions along lit segments instead. Nothing
+       animates, so no CSS motion override is required here. */
 
     /* ---- Responsive ---- */
     @media (max-width: 1024px) {
@@ -1700,14 +1665,12 @@
 
       <!-- line A: generator → bus 1 (about) -->
       <path class="rail-line-bed" d="M36 112 L36 235" data-seg="about"/>
-      <path class="rail-line-energy" d="M36 112 L36 235" data-seg="about"/>
       <circle class="rail-pad" cx="36" cy="235" r="4.2" data-seg="about"/>
       <line class="rail-bus" x1="16" y1="235" x2="56" y2="235" data-seg="about"/>
       <text class="rail-lbl" x="58" y="238">B1</text>
 
       <!-- line B: bus 1 → bus 2 (skills), gated by about -->
       <path class="rail-line-bed" d="M36 235 L36 405" data-seg="skills" data-needs="about"/>
-      <path class="rail-line-energy" d="M36 235 L36 405" data-seg="skills" data-needs="about"/>
       <g class="rail-brk" data-seg="skills" data-needs="about">
         <rect x="29" y="318" width="14" height="14"/>
         <line class="rail-brk-line" x1="32" y1="329" x2="40" y2="321"/>
@@ -1719,7 +1682,6 @@
 
       <!-- line C: bus 2 → bus 3 (projects), gated by skills -->
       <path class="rail-line-bed" d="M36 405 L36 575" data-seg="projects" data-needs="skills"/>
-      <path class="rail-line-energy" d="M36 405 L36 575" data-seg="projects" data-needs="skills"/>
       <g class="rail-brk" data-seg="projects" data-needs="skills">
         <rect x="29" y="490" width="14" height="14"/>
         <line class="rail-brk-line" x1="32" y1="501" x2="40" y2="493"/>
@@ -1741,7 +1703,6 @@
 
       <!-- line D: bus 3 → substation (contact), gated by projects -->
       <path class="rail-line-bed" d="M36 575 L36 745" data-seg="contact" data-needs="projects"/>
-      <path class="rail-line-energy" d="M36 575 L36 745" data-seg="contact" data-needs="projects"/>
       <g class="rail-brk" data-seg="contact" data-needs="projects">
         <rect x="29" y="660" width="14" height="14"/>
         <line class="rail-brk-line" x1="32" y1="671" x2="40" y2="663"/>
@@ -1753,10 +1714,8 @@
       <circle class="rail-tie" cx="36" cy="786" r="8" data-seg="contact"/>
       <text class="rail-lbl" x="46" y="770">INT</text>
       <path class="rail-line-bed" d="M36 794 L36 836" data-seg="contact" data-needs="projects"/>
-      <path class="rail-line-energy" d="M36 794 L36 836" data-seg="contact" data-needs="projects"/>
       <line class="rail-bus" x1="22" y1="836" x2="50" y2="836" data-seg="contact"/>
       <path class="rail-line-bed" d="M36 836 L36 870" data-seg="contact" data-needs="projects"/>
-      <path class="rail-line-energy" d="M36 836 L36 870" data-seg="contact" data-needs="projects"/>
       <g class="rail-plug" data-seg="contact">
         <circle cx="36" cy="880" r="6"/>
         <circle class="rail-plug-dot" cx="36" cy="880" r="1.6"/>
@@ -2458,35 +2417,20 @@
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
 
-      /* --- One-line rail: bidirectional power flow ---
-             Scrolling down = motoring: dash flow runs downward (normal
-             direction). Scrolling up = regeneration: .flow-rev swaps the
-             animation to railFlowRev (bottom → top). On each direction
-             flip the class is removed, a forced reflow is performed, and
-             the class is re-added — this restarts the dash animation so
-             the direction change is honored in every browser (Safari
-             ignores live animation-name swaps on running animations
-             without a reflow nudge). Energize + data-needs gating stay
-             untouched. A 1px delta threshold smooths momentum/touch
-             jitter. */
-      var powerRail = document.querySelector('.power-rail');
-      var lastY = window.scrollY;
-      var lastRev = null; /* last applied direction: true = up (regen) */
-      function onRailScroll() {
+/* --- One-line rail: scroll direction for the marching dots ---
+             Positive delta = scrolling down = motoring: dots travel down
+             the transmission lines. Negative delta = scrolling up =
+             regeneration: dots travel up. The dot rAF loop reads `railDir`
+             every frame, so the flip is instant. A 1px delta threshold
+             guards against momentum/touch jitter. */
+      var railDir = 1; /* 1 = down (motoring), -1 = up (regeneration) */
+      var railLastY = window.scrollY;
+      window.addEventListener('scroll', function () {
         var y = window.scrollY;
-        var d = y - lastY;
-        lastY = y;
-        if (powerRail && Math.abs(d) > 1) {
-          var rev = d < 0;
-          if (rev !== lastRev) {
-            lastRev = rev;
-            powerRail.classList.remove('flow-rev');
-            void powerRail.offsetWidth; /* reflow: force animation restart */
-            powerRail.classList.toggle('flow-rev', rev);
-          }
-        }
-      }
-      window.addEventListener('scroll', onRailScroll, { passive: true });
+        var d = y - railLastY;
+        railLastY = y;
+        if (Math.abs(d) > 1) railDir = d < 0 ? -1 : 1;
+      }, { passive: true });
 
       /* --- Reveal on scroll (runs AFTER cards render so they animate in too) --- */
       var reveals = document.querySelectorAll('.reveal');
@@ -2546,7 +2490,11 @@
         railSegs.forEach(function (el) {
           if (el.getAttribute('data-seg') !== id) return;
           var needs = el.getAttribute('data-needs');
-          if (!needs || railOn[needs]) el.classList.add('lit');
+          if (!needs || railOn[needs]) {
+            el.classList.add('lit');
+            /* spawn marching dots on lit transmission lines */
+            if (el.classList.contains('rail-line-bed')) railDotsEnsure(el);
+          }
         });
       }
 
@@ -2562,6 +2510,131 @@
       /* Without IntersectionObserver the rail simply stays in its default
          state — generator lit, everything else dark — fine for a
          decorative element. */
+
+      /* ============================================================
+         ONE-LINE RAIL: marching current dots
+         The CSS dash animation scaled with the stretched viewBox and was
+         imperceptible. Current is now shown as small glowing circles that
+         physically travel along each lit transmission line at a constant
+         screen-pixel speed, using getPointAtLength() to walk the path.
+         Direction flips instantly with scroll: down = motoring (top →
+         bottom), up = regeneration (bottom → top). One shared rAF loop;
+         dots only exist on segments whose .rail-line-bed is .lit; the
+         loop runs only while the rail is visible. Reduced motion / hidden
+         tab / mobile (<820px, rail display:none): dots stay parked at
+         fixed positions — no movement.
+         ============================================================ */
+      var railEl = document.querySelector('.power-rail');
+      var railSvgEl = document.querySelector('.power-svg');
+      var railReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var DOT_SPEED = 80;               /* real screen pixels per second */
+      var dotsGroup = null;
+      var dotSegs = [];                 /* {path, len, screenLen, dots:[{el,pos}]} */
+      var dotsRunning = false, dotsRaf = null, dotsLastT = 0;
+
+      /* build one segment: measure the path, convert screen px to path
+         length, and create its dots (2–3, evenly spaced) */
+      function railDotBuild(p) {
+        var L = p.getTotalLength();
+        if (!isFinite(L) || L <= 0) return null;
+        if (!railSvgEl) return null;
+        var sx = railEl && railEl.clientWidth ? railEl.clientWidth / 72 : 1;
+        var sy = railEl && railEl.clientHeight ? railEl.clientHeight / 1000 : 1;
+        var a = p.getPointAtLength(0);
+        var b = p.getPointAtLength(L);
+        var screenLen = Math.sqrt(Math.pow((b.x - a.x) * sx, 2) + Math.pow((b.y - a.y) * sy, 2));
+        if (screenLen <= 0) return null;
+        var count = screenLen >= 60 ? 3 : 2;
+        if (!dotsGroup) {
+          dotsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          dotsGroup.setAttribute('class', 'rail-dots');
+          railSvgEl.appendChild(dotsGroup);
+        }
+        var seg = { path: p, len: L, screenLen: screenLen, dots: [] };
+        for (var i = 0; i < count; i++) {
+          var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          c.setAttribute('class', 'rail-dot');
+          c.setAttribute('r', String(2.3));
+          dotsGroup.appendChild(c);
+          seg.dots.push({ el: c, pos: (i + 0.45) / count });
+        }
+        return seg;
+      }
+
+      /* called from energizeRail: create dots for a lit transmission line
+         (idempotent per path). Parks dots immediately when static. */
+      function railDotsEnsure(p) {
+        if (!p.classList.contains('lit')) return;
+        for (var i = 0; i < dotSegs.length; i++) {
+          if (dotSegs[i].path === p) return;
+        }
+        var seg = railDotBuild(p);
+        if (!seg) return;
+        dotSegs.push(seg);
+        if (railReduce || !railEl || railEl.offsetWidth === 0) renderDots(0);
+      }
+
+      /* advance + draw every dot. dt>0 moves them (dt in seconds);
+         dt=0 just places them (parked / static frame). */
+      function renderDots(dt) {
+        if (!dotSegs.length) return;
+        for (var i = 0; i < dotSegs.length; i++) {
+          var seg = dotSegs[i];
+          for (var j = 0; j < seg.dots.length; j++) {
+            var d = seg.dots[j];
+            if (dt > 0) {
+              d.pos += (DOT_SPEED * dt / seg.screenLen) * railDir;
+              if (d.pos >= 1) d.pos -= 1;
+              else if (d.pos < 0) d.pos += 1;
+            }
+            var pt = seg.path.getPointAtLength(d.pos * seg.len);
+            d.el.setAttribute('cx', pt.x.toFixed(2));
+            d.el.setAttribute('cy', pt.y.toFixed(2));
+          }
+        }
+      }
+
+      function dotsFrame(now) {
+        if (!dotsRunning) return;
+        var dt = Math.min((now - dotsLastT) / 1000, 0.05);
+        dotsLastT = now;
+        renderDots(dt);
+        dotsRaf = requestAnimationFrame(dotsFrame);
+      }
+      function dotsStart() {
+        if (dotsRunning || railReduce) return;
+        if (!railEl || railEl.offsetWidth === 0) return; /* hidden <820px */
+        dotsRunning = true;
+        dotsLastT = performance.now();
+        dotsRaf = requestAnimationFrame(dotsFrame);
+      }
+      function dotsStop() {
+        dotsRunning = false;
+        if (dotsRaf) { cancelAnimationFrame(dotsRaf); dotsRaf = null; }
+      }
+      function recomputeDotScale() {
+        if (!railEl || !railEl.clientHeight) return;
+        var sx = railEl.clientWidth / 72, sy = railEl.clientHeight / 1000;
+        for (var i = 0; i < dotSegs.length; i++) {
+          var seg = dotSegs[i];
+          var a = seg.path.getPointAtLength(0);
+          var b = seg.path.getPointAtLength(seg.len);
+          seg.screenLen = Math.sqrt(Math.pow((b.x - a.x) * sx, 2) + Math.pow((b.y - a.y) * sy, 2));
+        }
+      }
+
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) dotsStop();
+        else dotsStart();
+      });
+      window.addEventListener('resize', function () {
+        recomputeDotScale();
+        if (!railReduce && railEl && railEl.offsetWidth > 0) {
+          if (!dotsRunning) dotsStart();
+        }
+      });
+
+      dotsStart();
 
       /* ============================================================
          HERO OSCILLOSCOPE — live Fourier synthesis
