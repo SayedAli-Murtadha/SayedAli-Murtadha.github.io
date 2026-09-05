@@ -1998,15 +1998,14 @@
                 </div>
               </div>
 
-              <div class="cert-card featured" aria-label="General Assembly — Data Science Bootcamp (In Progress)">
+              <div class="cert-card featured" aria-label="General Assembly — Data Science Bootcamp (Complete)">
                 <div class="cert-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
                 </div>
                 <h4>General Assembly — Data Science Bootcamp</h4>
                 <p>Intensive, project-driven training in machine learning, statistics, and data storytelling.</p>
                 <div class="cert-inprog">
-                  <span class="cert-status">In Progress</span>
-                  <span class="cert-bar"><span class="cert-bar-fill" style="width:60%"></span></span>
+                  <span class="cert-status">Complete</span>
                 </div>
               </div>
             </div>
@@ -2214,8 +2213,36 @@
          ============================================================ */
       var projects = [
         {
-          id: 'predictive-maintenance-air-compressor',
+          id: 'bahraini-speech-intelligence',
           index: '01',
+          title: 'Bahraini Speech Intelligence',
+          tagline: 'Adapter-based fine-tuning of Whisper Large v3 Turbo for Bahraini business speech — parameter-efficient, vocabulary-guided, and evaluated at the character level.',
+          card: 'Parameter-efficient adapter pathway (r=32, alpha=32) on Whisper Large v3 Turbo for Bahraini business audio, with a 92-term guided vocabulary mechanism and full inference pipeline with quality filtering.',
+          desc: 'Capstone project with Hyperplane Innovation W.L.L. (August 18 – September 1, 2026) — adapting the Whisper Large v3 Turbo architecture to Bahraini Arabic business speech through a parameter-efficient adapter pathway. The adapter targets projection and feed-forward sub-layers with rank-constrained updates (r=32, alpha=32, dropout 0.05), leaving the original sequence weights untouched. A 92-term guided vocabulary mechanism covers procurement, HR, finance, and administration domains, injected at inference time through the decoder prompt context. The full pipeline includes signal enhancement, VAD-based segmentation with overlap, clustering-based diarization, adapter-guided transcription with temperature ladder and rescore loop, and quality filtering (unclear threshold 0.60, compression guard 2.0, generate guard 2.4).',
+          overview: 'A capstone engagement with Hyperplane Innovation W.L.L. adapting Whisper Large v3 Turbo to Bahraini business speech. The approach isolates the base architecture through a low-rank adapter (~55.7 MB serialized) that targets encoder-decoder projection and feed-forward sub-layers. A 92-term guided vocabulary covers procurement, HR, finance, and administration domains, injected at inference time without altering adapter weights. The audio pipeline operates in discrete stages — signal enhancement, segmentation, diarization, adapter-augmented transcription with temperature ladder and rescore loop, and quality filtering — producing a clean speaker-separated transcript stream. Evaluation uses Character Error Rate (CER) as the primary metric, supplemented by English, Mixed, and Overall Word Error Rate (WER) measurements to capture code-switching performance.',
+          approach: [
+            'Built a parameter-efficient adapter pathway (r=32, alpha=32, dropout 0.05) targeting projection and feed-forward sub-layers within each Whisper encoder-decoder block, preserving the base model\'s multilingual capabilities',
+            'Designed a 92-term guided vocabulary mechanism covering procurement, HR, finance, and administration domains, injected through the decoder\'s initial prompt context without structural modification',
+            'Constructed a multi-stage audio pipeline: signal enhancement (noise suppression, codec simulation), VAD-based segmentation with overlap windows, clustering-based diarization (two-speaker default), adapter-guided transcription with temperature ladder and rescore loop, and quality filtering',
+            'Implemented quality control mechanisms: unclear filter (threshold 0.60), compression guard (gzip length / raw length threshold 2.0, generate guard 2.4), and temperature ladder fallback (0.0 → 0.2 → 0.4)',
+            'Evaluated using Character Error Rate (CER) across mixed-language segments, with supplemental Word Error Rate breakdowns for English-only, Arabic-only, and mixed-language code-switching utterances'
+          ],
+          results: [
+            'Adapter serializes to ~55.7 MB, reducing memory footprint significantly compared to full-model fine-tuning while preserving multilingual capabilities',
+            'Vocabulary mechanism operates fully reversibly at inference time — terms can be updated independently without adapter retraining',
+            'Full pipeline demonstrates end-to-end speech-to-text for Bahraini business audio with speaker-separated output and quality-filtered transcripts',
+            'Primary evaluation metric (CER) selected specifically for mixed-language speech where word-level tokenization is ambiguous between Arabic script and Latin-script English insertions',
+            'Capstone completed with Hyperplane Innovation W.L.L. from August 18th to September 1st, 2026, with final project showcase delivered at the Bahrain Institute of Banking and Finance (BIBF)'
+          ],
+          tags: ['Speech-to-Text', 'Whisper', 'Adapter Fine-Tuning', 'Bahraini Arabic', 'NLP', 'Audio Pipeline', 'Mixed-Language', 'Capstone'],
+          files: [
+            { label: 'Methodology Report (PDF)', ext: 'PDF', path: 'projects/bahraini-speech-intelligence/Bahraini-Speech-Intelligence-Methodology.pdf' },
+            { label: 'Letter of Completion (PDF)', ext: 'PDF', path: 'projects/bahraini-speech-intelligence/Letter-Of-Completion.pdf' }
+          ]
+        },
+        {
+          id: 'predictive-maintenance-air-compressor',
+          index: '02',
           title: 'Predictive Maintenance for Air Compressors',
           tagline: 'A passion-project pipeline detecting industrial air-compressor failures before they occur — progressive unsupervised and supervised methods on the MetroPT3 dataset.',
           card: 'Passion project: a progressive predictive-maintenance pipeline for industrial air compressors using anomaly detection, Isolation Forest, XGBoost, and reconstruction-based models.',
@@ -2244,7 +2271,7 @@
         },
         {
           id: 'rental-price-prediction',
-          index: '02',
+          index: '03',
           title: 'Bahrain Rental Price Prediction',
           tagline: 'Predicting monthly rental prices in Bahrain with a competition-ready Random Forest pipeline.',
           card: 'Machine learning regression pipeline predicting monthly rental prices in Bahrain, built with a competition-ready Random Forest approach and feature engineering.',
@@ -2268,7 +2295,7 @@
         },
         {
           id: 'weather-track',
-          index: '03',
+          index: '04',
           title: 'Weather Track',
           tagline: 'An interactive weather observation tracker built with Streamlit.',
           card: 'An interactive weather observation tracker — log local observations, store records persistently, and analyze weather patterns over time.',
@@ -2290,7 +2317,7 @@
         },
         {
           id: 'wind-turbine-efficiency',
-          index: '04',
+          index: '05',
           title: 'Wind Turbine Efficiency Analysis',
           tagline: 'Renewable-energy acquisition analysis for a private equity firm.',
           card: 'Exploratory data analysis for a renewable-energy private equity firm — identifying which U.S. wind-farm traits drive energy efficiency and acquisition opportunities.',
@@ -2314,7 +2341,7 @@
         },
         {
           id: 'vfd-hoist-drive',
-          index: '05',
+          index: '06',
           title: '4-Quadrant VFD Hoist Drive',
           tagline: 'A 4-quadrant VFD controlling a 4 kW induction motor under a gravitational hoist load.',
           card: 'Simulation of a VFD-controlled hoist drive in MATLAB/Simulink — bidirectional power flow, SPWM modulation, and a dynamic braking chopper protecting the DC link.',
@@ -2342,7 +2369,7 @@
         },
         {
           id: 'iir-fir-digital-filters',
-          index: '06',
+          index: '07',
           title: 'IIR & FIR Digital Filters for Audio Restoration',
           tagline: 'Digital signal processing term project restoring heavily corrupted audio with purpose-built filters in MATLAB.',
           card: 'DSP term project restoring heavily corrupted audio with purpose-built IIR and FIR digital filters in MATLAB.',
@@ -2377,7 +2404,7 @@
         },
         {
           id: 'eeg-power-spectrum-modeling',
-          index: '07',
+          index: '08',
           title: 'EEG Power Spectrum Modeling — Lagrange & Newton Interpolation',
           tagline: 'Modeling the EEG β-wave power spectrum with Lagrange and Newton interpolation in MATLAB.',
           card: 'Modeling the EEG β-wave power spectrum with Lagrange and Newton interpolation in MATLAB.',
@@ -2457,6 +2484,10 @@
         // 07 EEG — PSD silhouette with highlighted β-band
         if (id === 'eeg-power-spectrum-modeling') {
           return '<svg viewBox="0 0 120 40" preserveAspectRatio="none" class="wave-svg" focusable="false"><polyline ' + stroke + ' points="2,30 18,22 36,28 54,10 72,20 90,8 108,24 118,28"/><rect x="54" y="6" width="18" height="18" fill="rgba(61,255,111,0.07)" stroke="rgba(61,255,111,0.5)" stroke-width="0.7" rx="2"/></svg>';
+        }
+        // Bahraini Speech Intelligence — waveform with adapter layer indicator
+        if (id === 'bahraini-speech-intelligence') {
+          return '<svg viewBox="0 0 120 40" preserveAspectRatio="none" class="wave-svg" focusable="false"><polyline ' + stroke + ' points="2,28 18,18 36,32 54,14 72,26 90,12 108,30 118,22"/><line ' + 'stroke="rgba(255,182,74,0.45)" stroke-width="2" fill="none" stroke-linecap="round" x1="54" y1="6" x2="54" y2="36"/><circle ' + 'fill="rgba(255,182,74,0.35)" cx="54" cy="20" r="4.5"/></svg>';
         }
         // Fallback — minimal abstract trace
         return '<svg viewBox="0 0 120 40" preserveAspectRatio="none" class="wave-svg" focusable="false"><polyline ' + stroke + ' points="2,20 30,14 60,26 90,12 118,22"/></svg>';
